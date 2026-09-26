@@ -18,8 +18,12 @@ export const ALLOWED = new Set([
 /**
  * Packages cleared by a maintainer despite a license outside ALLOWED.
  * Adding an entry requires maintainer agreement per GOVERNANCE.md.
+ *
+ * - `postgres` (postgres.js) is Unlicense, a public-domain dedication. Permissive and
+ *   compatible with Apache-2.0 redistribution, but with no patent grant, so it is
+ *   approved by name rather than by widening the allowlist. Approved for #17.
  */
-export const EXCEPTIONS = new Map();
+export const EXCEPTIONS = new Map([["postgres", "Unlicense"]]);
 
 /** Splits an SPDX expression into its license identifiers and operator. */
 export function parseExpression(expression) {

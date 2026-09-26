@@ -47,6 +47,30 @@ docker compose up
 
 `docker compose down -v` removes the containers and their volumes.
 
+### Supabase CLI
+
+`supabase start` is an alternative to the compose `db` service, adding Auth and Storage
+locally. **Run one or the other, not both** — they share port 54322.
+
+```bash
+supabase start          # local stack, applies supabase/migrations
+supabase db reset       # rebuild from migrations
+supabase stop
+```
+
+Migrations live in `supabase/migrations/` and are applied by both paths.
+
+### Database connections
+
+Two URLs, deliberately separate (ARCHITECTURE.md §3.4):
+
+- `DATABASE_URL` — Supavisor **transaction mode** (port 6543) for application traffic.
+  Prepared statements are disabled in this mode; serverless instances would otherwise
+  exhaust Postgres connections.
+- `DIRECT_URL` — direct connection (port 5432) for migrations only.
+
+Verify connection handling with `pnpm db:load-test 100`.
+
 The same image runs locally, on Cloud Run, and on a plain VM — build it directly with
 `docker build -f infra/docker/Dockerfile --build-arg APP_NAME=web .`.
 
