@@ -71,18 +71,20 @@ jobs:
       - name: Install psql client
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql-client
 
-      # The image may bootstrap as supabase_admin or postgres depending on the runtime,
-      # so create the role only when it is missing.
+      # The image may bootstrap as supabase_admin or postgres depending on the runtime.
+      # The suite needs SET ROLE app_user, so ensure the role exists with those attributes.
       - name: Ensure postgres role
         env:
           PGPASSWORD: postgres
         run: |
           psql -h localhost -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -c \
             "do \$\$ begin
-               if not exists (select 1 from pg_roles where rolname = 'postgres') then
+               if exists (select 1 from pg_roles where rolname = 'postgres') then
+                 alter role postgres with login superuser password 'postgres';
+               else
                  create role postgres login superuser password 'postgres';
                end if;
-             end \$\$;" || true
+             end \$\$;"
 
       - name: Apply migrations and run pgTAP
         run: scripts/run-pgtap.sh "postgres://postgres:postgres@localhost:5432/postgres"
