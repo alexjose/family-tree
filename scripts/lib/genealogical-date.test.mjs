@@ -85,6 +85,17 @@ describe("parseDate", () => {
       (e) => /Try a year like 1958/.test(e.message),
     );
   });
+
+  // Guards the ReDoS fix: unbounded whitespace next to `.+` backtracked polynomially.
+  it("rejects absurdly long input quickly", () => {
+    const hostile = `about ${" ".repeat(50_000)}x`;
+    const started = performance.now();
+    assert.throws(() => parseDate(hostile), DateParseError);
+    assert.ok(
+      performance.now() - started < 250,
+      "parsing must not degrade on long input",
+    );
+  });
 });
 
 describe("isValidPartialDate", () => {

@@ -109,7 +109,7 @@ function parsePartial(text: string): PartialDate | undefined {
   }
 
   // "12 March 1901", "March 1901"
-  const words = /^(?:(\d{1,2})\s+)?([a-z]{3,})\.?\s+(\d{3,4})$/.exec(text);
+  const words = /^(?:(\d{1,2}) )?([a-z]{3,})\.? (\d{3,4})$/.exec(text);
   if (words) {
     const prefix = (words[2] ?? "").slice(0, 3);
     const index = MONTHS.findIndex((m) => m.startsWith(prefix));
