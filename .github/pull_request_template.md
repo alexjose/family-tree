@@ -36,11 +36,13 @@ Closes #
 - [ ] Destructive actions confirmed and undoable
 - [ ] Works at 200% zoom and with OS large-text settings
 - [ ] Screenshots attached (mobile and desktop)
+- [ ] Tested by a non-technical person before release
 
 ## Data and security
 
 - [ ] No schema change in this PR
 - [ ] New tables have RLS policies **and** pgTAP isolation tests
+- [ ] Tenant-scoped queries are covered by a pgTAP isolation test
 - [ ] Server-side authorization enforced, not just hidden in the UI
 - [ ] No secrets, `.env` files, or real personal/family data committed
 - [ ] New runtime dependencies are Apache-2.0 compatible (`pnpm check:licenses`)

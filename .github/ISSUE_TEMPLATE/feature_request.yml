@@ -7,7 +7,7 @@ body:
       value: |
         Priority follows one rule: **onboarding friction and engagement outrank everything
         else.** Requests that help families start, contribute, or come back are favoured.
-        See [ROADMAP.md](../ROADMAP.md).
+        See [ROADMAP.md](https://github.com/alexjose/family-tree/blob/main/ROADMAP.md).
 
   - type: textarea
     id: problem
