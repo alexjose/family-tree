@@ -28,6 +28,28 @@ pnpm install
 pnpm build
 ```
 
+### Local stack with Docker
+
+One command brings up the whole environment:
+
+```bash
+cp .env.example .env
+docker compose up
+```
+
+| Service   | Purpose                                              | Local address                                 |
+| --------- | ---------------------------------------------------- | --------------------------------------------- |
+| `web`     | Web application                                      | http://localhost:3000 (`/healthz`, `/readyz`) |
+| `worker`  | Background job runner                                | http://localhost:3001/healthz                 |
+| `db`      | Postgres with `pg_trgm`, `fuzzystrmatch`, `pgcrypto` | `localhost:54322`                             |
+| `storage` | S3-compatible object storage (SeaweedFS)             | http://localhost:8333                         |
+| `mail`    | Mail catcher — no mail leaves your machine           | http://localhost:8025                         |
+
+`docker compose down -v` removes the containers and their volumes.
+
+The same image runs locally, on Cloud Run, and on a plain VM — build it directly with
+`docker build -f infra/docker/Dockerfile --build-arg APP_NAME=web .`.
+
 ### Commands
 
 | Command                             | Purpose                                 |
