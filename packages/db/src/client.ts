@@ -44,9 +44,23 @@ export function readConfigFromEnv(env: NodeJS.ProcessEnv = process.env): Databas
   };
 }
 
-/** True when the URL points at Supavisor's transaction-mode port. */
+/**
+ * True when the URL points at Supavisor's transaction-mode endpoint.
+ * Parses the URL rather than substring-matching it, so a host such as
+ * `evil.com/?x=pooler.supabase.com` cannot pass as the pooler.
+ */
 export function isTransactionPooler(url: string): boolean {
-  return url.includes(":6543") || url.includes("pooler.supabase.com");
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return false;
+  }
+
+  if (parsed.port === "6543") return true;
+
+  const host = parsed.hostname.toLowerCase();
+  return host === "pooler.supabase.com" || host.endsWith(".pooler.supabase.com");
 }
 
 export function createClient(config: DatabaseConfig, mode: ConnectionMode = "pooled") {

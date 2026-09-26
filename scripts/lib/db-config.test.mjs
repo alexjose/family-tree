@@ -29,6 +29,26 @@ describe("isTransactionPooler", () => {
       false,
     );
   });
+
+  // Substring matching once let these through (CodeQL js/incomplete-url-substring-sanitization).
+  it("rejects hosts that merely mention the pooler domain", () => {
+    assert.equal(
+      isTransactionPooler("postgres://user:pw@evil.com/pooler.supabase.com"),
+      false,
+    );
+    assert.equal(
+      isTransactionPooler(
+        "postgres://user:pw@pooler.supabase.com.evil.com:5432/postgres",
+      ),
+      false,
+    );
+    assert.equal(isTransactionPooler("https://evil.com/?x=pooler.supabase.com"), false);
+  });
+
+  it("rejects an unparseable URL", () => {
+    assert.equal(isTransactionPooler("not a url"), false);
+    assert.equal(isTransactionPooler(""), false);
+  });
 });
 
 describe("readConfigFromEnv", () => {
