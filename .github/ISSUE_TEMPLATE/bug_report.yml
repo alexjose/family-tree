@@ -8,8 +8,8 @@ body:
         **Please redact personal data.** Blur or replace real names, dates, and photos in
         screenshots and descriptions. Never paste another living person's details.
 
-        For security vulnerabilities, follow [SECURITY.md](../SECURITY.md) instead — do not
-        open a public issue.
+        For security vulnerabilities, follow [SECURITY.md](https://github.com/alexjose/family-tree/blob/main/SECURITY.md)
+        instead — do not open a public issue.
 
   - type: textarea
     id: what-happened
