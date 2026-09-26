@@ -225,6 +225,43 @@ dedicated VMs. Cloud Run runs the _identical container_ you will later run on a 
 that migration is a deployment change rather than a port. Vercel remains a supported
 target for contributors who prefer it.
 
+#### Staging project
+
+| Setting              | Value                                                     |
+| -------------------- | --------------------------------------------------------- |
+| Supabase project ref | `ymdxmhpfdurkfdbryfwr`                                    |
+| Region               | `ap-northeast-2`                                          |
+| Postgres role        | `postgres` (local compose creates the same role)          |
+| Database             | `postgres` — required by `pg_cron`'s `cron.database_name` |
+
+#### Free-tier limits, in the order they will bite
+
+| Limit                     | Free tier                | What happens first                                                                                                          |
+| ------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| **Project pausing**       | Paused after 7 days idle | Bites before any quota during early development — a staging project nobody touched for a week needs manual resuming         |
+| **Active projects**       | 2 per organisation       | Staging plus production fills the allowance; a third needs a paid plan                                                      |
+| Database size             | 500 MB                   | Thousands of people and relationships fit easily; media is the real consumer, and it lives in object storage                |
+| Storage                   | 1 GB                     | **The first quota to be exhausted in practice.** A few hundred family photos reach it, which is why media moves to R2 in v2 |
+| Egress                    | 5 GB/month               | Image bandwidth, not API traffic. Same trigger as above                                                                     |
+| Direct connections        | 60                       | Never reached through the pooler, trivially exhausted without it                                                            |
+| Pooler client connections | 200                      | The number that actually matters for serverless                                                                             |
+
+Practical consequence: **storage and egress force the R2 move before database size ever
+matters**, and idle pausing is a development nuisance rather than a scaling limit.
+
+#### Secrets
+
+Set per environment; never committed. CI reads them by name only.
+
+| Name                        | Purpose                                                             |
+| --------------------------- | ------------------------------------------------------------------- |
+| `DATABASE_URL`              | Supavisor transaction-mode URL, port 6543 — application traffic     |
+| `DIRECT_URL`                | Direct connection, port 5432 — migrations only                      |
+| `SUPABASE_ANON_KEY`         | Browser-side Supabase client                                        |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only; **never** used for user traffic, since it bypasses RLS |
+
+Stored as GitHub Actions secrets for CI and Secret Manager for Cloud Run.
+
 ### v2 — separated concerns, still scale-to-zero
 
 - Worker extracted into its own Cloud Run service.

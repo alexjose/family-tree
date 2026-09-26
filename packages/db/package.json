@@ -16,6 +16,7 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
-    "@family-tree/core": "workspace:*"
+    "@family-tree/core": "workspace:*",
+    "postgres": "^3.4.9"
   }
 }
