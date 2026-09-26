@@ -144,6 +144,8 @@ function unreadable(input: string): string {
 export function parseDate(input: string): GenealogicalDate {
   const original = input.trim();
   if (original === "") return UNKNOWN_DATE;
+  // Longer than any real date entry; caps the work a single parse can do.
+  if (original.length > 100) throw new DateParseError(unreadable(input));
 
   const text = original.toLowerCase().replace(/\s+/g, " ");
 
@@ -160,7 +162,7 @@ export function parseDate(input: string): GenealogicalDate {
   const edtfAfter = /^(.+)\/\.\.$/.exec(text);
   if (edtfAfter) return qualified("after", edtfAfter[1] ?? "", original, input);
 
-  const edtfRange = /^(.+)\/(.+)$/.exec(text);
+  const edtfRange = /^([^/]+)\/([^/]+)$/.exec(text);
   if (edtfRange) {
     const start = parsePartial((edtfRange[1] ?? "").trim());
     const end = parsePartial((edtfRange[2] ?? "").trim());
@@ -181,16 +183,16 @@ export function parseDate(input: string): GenealogicalDate {
     };
   }
 
-  const about = /^(?:about|abt\.?|circa|ca?\.?|around|approx\.?|~)\s*(.+)$/.exec(text);
+  const about = /^(?:about|abt\.?|circa|ca?\.?|around|approx\.?|~) ?(.+)$/.exec(text);
   if (about) return qualified("approximate", about[1] ?? "", original, input);
 
-  const before = /^(?:before|bef\.?|prior to|<)\s*(.+)$/.exec(text);
+  const before = /^(?:before|bef\.?|prior to|<) ?(.+)$/.exec(text);
   if (before) return qualified("before", before[1] ?? "", original, input);
 
-  const after = /^(?:after|aft\.?|since|>)\s*(.+)$/.exec(text);
+  const after = /^(?:after|aft\.?|since|>) ?(.+)$/.exec(text);
   if (after) return qualified("after", after[1] ?? "", original, input);
 
-  const range = /^(?:between\s+)?(.+?)\s*(?:–|—|\sto\s|\sand\s|-)\s*(.+)$/.exec(text);
+  const range = /^(?:between )?([^–—-]+?) ?(?:–|—| to | and |-) ?(.+)$/.exec(text);
   if (range) {
     const start = parsePartial((range[1] ?? "").trim());
     const end = parsePartial((range[2] ?? "").trim());
