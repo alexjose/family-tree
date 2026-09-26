@@ -1,0 +1,118 @@
+name: family-tree
+
+services:
+  db:
+    # Supabase's Postgres build, which carries the extensions ARCHITECTURE.md §3 requires.
+    image: supabase/postgres:15.8.1.060
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      # pg_cron only installs into the database named in cron.database_name, which is
+      # `postgres`. Supabase-hosted projects use the same database name.
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+    ports:
+      - "${POSTGRES_PORT:-54322}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./infra/docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${POSTGRES_DB:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  storage:
+    # S3-compatible local storage. SeaweedFS is Apache-2.0; MinIO's images are no longer
+    # publicly pullable. Deployments use Supabase Storage or Cloudflare R2 (ADR-012).
+    image: chrislusf/seaweedfs:3.80
+    command: server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json -ip=storage
+    environment:
+      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY:-localdev}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY:-localdev-secret}
+    ports:
+      - "${STORAGE_PORT:-8333}:8333"
+      - "${STORAGE_CONSOLE_PORT:-9333}:9333"
+    volumes:
+      - storage-data:/data
+      - ./infra/docker/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
+    healthcheck:
+      # `-ip=storage` binds to the container's own address, not loopback.
+      test: ["CMD", "wget", "-q", "--spider", "http://storage:9333/cluster/status"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  mail:
+    image: axllent/mailpit:v1.22
+    ports:
+      - "${MAIL_SMTP_PORT:-1025}:1025"
+      - "${MAIL_UI_PORT:-8025}:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  web:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+      args:
+        APP_NAME: web
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-postgres}
+      STORAGE_ENDPOINT: http://storage:8333
+      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY:-localdev}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY:-localdev-secret}
+      SMTP_URL: smtp://mail:1025
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      storage:
+        condition: service_healthy
+      mail:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  worker:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile
+      args:
+        APP_NAME: worker
+    environment:
+      WORKER_PORT: 3001
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-postgres}
+      SMTP_URL: smtp://mail:1025
+    ports:
+      - "${WORKER_PORT:-3001}:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:3001/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:
+  storage-data:
