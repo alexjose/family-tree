@@ -82,6 +82,21 @@ those are reachable without a rewrite — that is [R12](FEATURES.md#162-open-sou
 
 A CI lint rule enforces the import boundary.
 
+**How it is enforced.** `eslint.config.mjs` applies `no-restricted-imports` to
+`packages/core/**/*.ts`, rejecting:
+
+- Frameworks and clients — `next`, `react`, `@supabase/*`, `hono`, `drizzle-orm`, `pg`, `postgres`
+- Node I/O built-ins — `node:fs`, `node:http`, `node:net`, `node:dns`, `node:child_process`, and their bare aliases
+- Other workspace packages — `@family-tree/db`, `adapters`, `ui`, `api-contract`, `gedcom`
+
+Core therefore depends only on interfaces it defines itself; `packages/db` and
+`packages/adapters` implement them. A second check
+(`scripts/lib/core-boundary.test.mjs`) asserts that `packages/core/package.json`
+declares no runtime, peer, or optional dependencies, so the boundary cannot be
+reopened through the manifest instead of through an import.
+
+Both run in the `quality` CI job and fail the build.
+
 ---
 
 ## 3. Data Architecture
