@@ -7,6 +7,8 @@
 export const ALLOWED = new Set([
   "0BSD",
   "Apache-2.0",
+  // OSI-approved and permissive, with an explicit patent grant that MIT lacks.
+  "BlueOak-1.0.0",
   "BSD-2-Clause",
   "BSD-3-Clause",
   "ISC",
