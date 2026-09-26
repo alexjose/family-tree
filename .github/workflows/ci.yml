@@ -148,12 +148,16 @@ jobs:
       - name: Audit dependencies
         run: pnpm audit --prod --audit-level high
 
+      # Code scanning needs Advanced Security, which private repositories do not have.
+      # This activates automatically when the project is made public.
       - name: Initialize CodeQL
+        if: github.event.repository.visibility == 'public'
         uses: github/codeql-action/init@v3
         with:
           languages: javascript-typescript
 
       - name: Analyze
+        if: github.event.repository.visibility == 'public'
         uses: github/codeql-action/analyze@v3
 
   secrets:
@@ -166,7 +170,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Run the CLI directly rather than the action, which requires API write access to
+      # post comments and fails on repositories without that permission.
       - name: Scan for committed secrets
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/repo" \
+            ghcr.io/gitleaks/gitleaks:v8.24.3 \
+            dir /repo --redact --no-banner --exit-code 1
