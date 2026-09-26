@@ -72,9 +72,10 @@ packages/ui     Design system
 packages/*      api-contract, adapters, gedcom
 ```
 
-**The `packages/core` boundary will be enforced in CI** by a dedicated lint rule (tracked
-separately). Domain logic must not import Next.js, Supabase, Hono, Drizzle, or any I/O
-library. See [ARCHITECTURE.md](ARCHITECTURE.md).
+**The `packages/core` boundary is enforced in CI.** Domain logic must not import Next.js,
+Supabase, Hono, Drizzle, or any I/O library, nor any other workspace package. Depend on an
+interface defined in core and implement it in `packages/db` or `packages/adapters`. See
+[ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Workflow
 
