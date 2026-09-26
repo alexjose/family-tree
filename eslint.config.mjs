@@ -32,5 +32,10 @@ export default tseslint.config(
       "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
+  {
+    // CLI scripts report to stdout by design.
+    files: ["scripts/**/*.mjs"],
+    rules: { "no-console": "off" },
+  },
   prettier,
 );

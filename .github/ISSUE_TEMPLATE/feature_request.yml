@@ -1,0 +1,69 @@
+name: Feature request
+description: Suggest an improvement or new capability
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Priority follows one rule: **onboarding friction and engagement outrank everything
+        else.** Requests that help families start, contribute, or come back are favoured.
+        See [ROADMAP.md](../ROADMAP.md).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the situation, not the solution. Who is stuck, and on what?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to happen?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: who
+    attributes:
+      label: Who benefits most?
+      options:
+        - Older or non-technical family members
+        - Younger family members
+        - The person maintaining the tree
+        - Serious genealogists
+        - Self-hosters and administrators
+        - Everyone
+    validations:
+      required: true
+
+  - type: dropdown
+    id: goal
+    attributes:
+      label: Which goal does this serve?
+      options:
+        - Getting started (fewer barriers to a useful tree)
+        - Contribution (making it easier to add or correct information)
+        - Retention (a reason to come back)
+        - Trust and accuracy
+        - Privacy and safety
+        - Interoperability with other tools
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Existing workarounds, or how other tools handle this.
+
+  - type: checkboxes
+    id: considerations
+    attributes:
+      label: Considerations
+      options:
+        - label: This involves data about living people
+        - label: This would share data outside the app or with another family
+        - label: This involves biometric, DNA, or AI-derived data (requires explicit opt-in)
