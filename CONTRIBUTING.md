@@ -146,9 +146,13 @@ CLA — there is no paperwork to sign.
 
 ## Dependencies
 
-Runtime dependencies must be **Apache-2.0 compatible** (Apache-2.0, MIT, BSD, ISC).
-Copyleft licenses (GPL, AGPL, LGPL, MPL, SSPL) are not permitted in anything we
-distribute. Dev-only tooling under MPL-2.0 is acceptable because it is never bundled.
+Runtime dependencies must be **Apache-2.0 compatible**: Apache-2.0, MIT, MIT-0, BSD-2/3,
+ISC, 0BSD, BlueOak-1.0.0, or PostgreSQL. Copyleft licenses (GPL, AGPL, LGPL, MPL, SSPL)
+are not permitted in anything we distribute. Dev-only tooling under MPL-2.0 is acceptable
+because it is never bundled.
+
+Anything outside that set needs maintainer agreement and a named exception in
+`scripts/lib/license-policy.mjs`, per [GOVERNANCE.md](GOVERNANCE.md).
 
 Run `pnpm check:licenses` before adding a dependency. Prefer boring, well-maintained
 packages — the contributor pool for this domain is small, and exotic choices shrink it.

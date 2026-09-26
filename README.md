@@ -45,4 +45,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full development workflow.
 [Apache-2.0](LICENSE). See [NOTICE](NOTICE).
 
 All dependencies shipped in distributed artifacts must be Apache-2.0 compatible
-(Apache-2.0, MIT, BSD, ISC). Copyleft licenses are not permitted in runtime dependencies.
+(Apache-2.0, MIT, BSD, ISC, 0BSD, BlueOak-1.0.0, PostgreSQL). Copyleft licenses are not
+permitted in runtime dependencies.
