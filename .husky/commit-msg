@@ -1,0 +1,8 @@
+pnpm exec commitlint --edit "$1"
+
+# DCO sign-off is required on every commit; use `git commit -s`.
+if ! grep -qiE '^Signed-off-by: .+ <.+@.+>' "$1"; then
+  echo "✖ Missing Signed-off-by trailer (DCO)."
+  echo "  Commit with:  git commit -s -m \"feat(core): ...\""
+  exit 1
+fi

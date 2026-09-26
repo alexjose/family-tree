@@ -1,0 +1,17 @@
+{
+  "name": "@family-tree/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src",
+    "clean": "rm -rf dist .turbo .next"
+  },
+  "dependencies": {
+    "@family-tree/api-contract": "workspace:*",
+    "@family-tree/core": "workspace:*",
+    "@family-tree/ui": "workspace:*"
+  }
+}

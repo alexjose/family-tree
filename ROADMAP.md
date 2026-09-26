@@ -18,20 +18,20 @@ Iteration plan for the family tree platform. Scope definitions live in
 
 ## 1. Timeline at a Glance
 
-| Release | Theme | Length | Audience |
-| --- | --- | --- | --- |
-| **I0** | Foundations + design system | 3 weeks | Internal |
-| **I1** | Walking skeleton | 2 weeks | Internal |
-| **v1.0** | **MVP — build and view a family tree** | 4 weeks | **1–3 real families (private beta)** |
-| v1.1 | Engagement loop | 2 weeks | Beta families |
-| v1.2 | Getting data in | 2 weeks | Beta families |
-| v1.3 | Memories and media | 2 weeks | Open beta |
-| v1.4 | Trust and moderation | 2 weeks | Open beta |
-| v1.5 | Completeness and insight | 2 weeks | Public 1.5 |
-| v1.6 | Sharing and growth | 2 weeks | Public |
-| **v2.0** | Multi-family: tenancy + cross-tenant links | 6 weeks | Public |
-| v2.x | Directory, events, reputation, API | 3 × 2 weeks | Public |
-| **v3.0** | Federation, rich media, offline, i18n | 8+ weeks | Public |
+| Release  | Theme                                      | Length      | Audience                             |
+| -------- | ------------------------------------------ | ----------- | ------------------------------------ |
+| **I0**   | Foundations + design system                | 3 weeks     | Internal                             |
+| **I1**   | Walking skeleton                           | 2 weeks     | Internal                             |
+| **v1.0** | **MVP — build and view a family tree**     | 4 weeks     | **1–3 real families (private beta)** |
+| v1.1     | Engagement loop                            | 2 weeks     | Beta families                        |
+| v1.2     | Getting data in                            | 2 weeks     | Beta families                        |
+| v1.3     | Memories and media                         | 2 weeks     | Open beta                            |
+| v1.4     | Trust and moderation                       | 2 weeks     | Open beta                            |
+| v1.5     | Completeness and insight                   | 2 weeks     | Public 1.5                           |
+| v1.6     | Sharing and growth                         | 2 weeks     | Public                               |
+| **v2.0** | Multi-family: tenancy + cross-tenant links | 6 weeks     | Public                               |
+| v2.x     | Directory, events, reputation, API         | 3 × 2 weeks | Public                               |
+| **v3.0** | Federation, rich media, offline, i18n      | 8+ weeks    | Public                               |
 
 Roughly 4 months to a usable public product, 7 to multi-family.
 
@@ -64,6 +64,7 @@ No features. This exists so that every later iteration is fast and the UI bar is
 structural rather than aspirational.
 
 **Engineering**
+
 - Monorepo, TypeScript strict, pnpm + Turborepo, CI pipeline
 - Dockerfile + `docker compose up` local stack
 - Supabase project; Drizzle schema for `tenant`, `tenant_member`, `person`, `relationship`, `assertion`
@@ -71,7 +72,8 @@ structural rather than aspirational.
 - Supabase Auth wired with `active_tenant_id` in `app_metadata`
 - Deploy pipeline to Cloud Run with a live staging URL
 
-**Design system** *(runs in parallel, equal priority)*
+**Design system** _(runs in parallel, equal priority)_
+
 - Type scale (18px base), color tokens, spacing, light/dark/high-contrast themes
 - Core components: button, input, date field, card, dialog, toast, nav, avatar
 - Accessibility primitives via Radix; axe-core in CI from the first component
@@ -102,22 +104,22 @@ One thin slice through every layer, to de-risk the architecture.
 
 ### In scope
 
-| Area | Included |
-| --- | --- |
-| Auth | Magic link + phone OTP; scoped invite links; WhatsApp/QR invite sharing |
-| Onboarding | Guided wizard: "Who are you?" → add parents → add children → done |
-| Person | Name, nickname, gender, birth/death dates (incl. approximate), place, one photo, living flag, short bio |
-| Relationships | Parent–child (biological/adopted/step) and spouse/partner with status |
-| Tree | Pedigree + descendant views, SVG, pan/zoom with visible buttons, "center on me" |
-| Profile | Person page with relatives, dates, photo |
-| List view | Sortable, searchable table — the fallback for anyone overwhelmed by the graph |
-| Search | Name search with fuzzy + phonetic matching |
-| Editing | Own profile edits apply directly; everything else is a suggestion |
-| Approval | Single queue with before/after diff; tenant admin approves |
-| History | Version history per person; revert |
-| Privacy | Fully login-gated; living-person protection on by default |
-| Home | "Birthdays & anniversaries this month" — the one engagement hook in v1.0 |
-| Admin | Member list, invites, pending approvals |
+| Area          | Included                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------- |
+| Auth          | Magic link + phone OTP; scoped invite links; WhatsApp/QR invite sharing                                 |
+| Onboarding    | Guided wizard: "Who are you?" → add parents → add children → done                                       |
+| Person        | Name, nickname, gender, birth/death dates (incl. approximate), place, one photo, living flag, short bio |
+| Relationships | Parent–child (biological/adopted/step) and spouse/partner with status                                   |
+| Tree          | Pedigree + descendant views, SVG, pan/zoom with visible buttons, "center on me"                         |
+| Profile       | Person page with relatives, dates, photo                                                                |
+| List view     | Sortable, searchable table — the fallback for anyone overwhelmed by the graph                           |
+| Search        | Name search with fuzzy + phonetic matching                                                              |
+| Editing       | Own profile edits apply directly; everything else is a suggestion                                       |
+| Approval      | Single queue with before/after diff; tenant admin approves                                              |
+| History       | Version history per person; revert                                                                      |
+| Privacy       | Fully login-gated; living-person protection on by default                                               |
+| Home          | "Birthdays & anniversaries this month" — the one engagement hook in v1.0                                |
+| Admin         | Member list, invites, pending approvals                                                                 |
 
 ### Explicitly NOT in v1.0
 
@@ -130,6 +132,7 @@ auto-promotion · branch moderators · relationship calculator · directory
 > effort. GEDCOM lands in v1.2, scoped to 7.0.
 
 ### Release gate
+
 A real family adds 25+ people **without help**, and at least one member over 60 completes
 a profile edit unaided.
 
@@ -139,26 +142,30 @@ a profile edit unaided.
 
 Each iteration has one theme, ships to users, and targets a specific risk.
 
-### v1.1 — Engagement loop *(targets [R2](FEATURES.md#161-product-risks): no reason to return)*
+### v1.1 — Engagement loop _(targets [R2](FEATURES.md#161-product-risks): no reason to return)_
+
 - "On this day" on the home screen
 - Birthday / anniversary / remembrance reminders by email and **WhatsApp** (no PII in message bodies)
 - Notification centre + per-member channel preferences and quiet hours
 - Activity feed: recent changes in your family
 
-### v1.2 — Getting data in *(targets [R1](FEATURES.md#161-product-risks): cold start)*
+### v1.2 — Getting data in _(targets [R1](FEATURES.md#161-product-risks): cold start)_
+
 - GEDCOM 7.0 import with preview-and-map before commit; 5.5.1 best-effort
 - Bulk quick-add: "add all siblings" / "add all children" in one form
 - Duplicate detection with merge
 - GEDCOM 7.0 export (data portability from early on)
 
-### v1.3 — Memories and media *(targets [R4](FEATURES.md#161-product-risks): painful data entry)*
+### v1.3 — Memories and media _(targets [R4](FEATURES.md#161-product-risks): painful data entry)_
+
 - Photo gallery per person; drag-and-drop and mobile camera upload
 - **Voice memories** — one-tap recording, the easiest contribution path for elders
 - Weekly memory prompts
 - **WhatsApp reply-to-contribute**: reply with a voice note or photo → pending suggestion
 - Life events timeline
 
-### v1.4 — Trust and moderation *(targets [R3](FEATURES.md#161-product-risks) and [R7](FEATURES.md#161-product-risks))*
+### v1.4 — Trust and moderation _(targets [R3](FEATURES.md#161-product-risks) and [R7](FEATURES.md#161-product-risks))_
+
 - Verified contributors with scoped bypass
 - Branch moderators
 - Recent-changes patrol feed; challenge and revert
@@ -166,12 +173,14 @@ Each iteration has one theme, ships to users, and targets a specific risk.
 - Rate limits and abuse reporting
 
 ### v1.5 — Completeness and insight
+
 - Branch completeness meter and missing-info quests
 - Family statistics; relationship calculator ("how am I related to X?")
 - Simple mode toggle; in-app text-size control
 - Guided "show me how" tour
 
 ### v1.6 — Sharing and growth
+
 - Consent-gated share cards (rendered images, never data)
 - Family events module with RSVP and shared album
 - Authenticated share links
@@ -192,6 +201,7 @@ The tenancy model is in the schema from I0; this release exposes it.
 - Linked-person badges and dashed connectors in the tree
 
 ### v2.1–v2.3 (2 weeks each)
+
 - Opt-in family directory; link requests with anti-abuse quotas
 - Public OpenAPI 3.1, API keys, webhooks, generated SDK
 - Approval rules engine; auto-promotion thresholds; tenant merge/split
@@ -203,7 +213,7 @@ The tenancy model is in the schema from I0; this release exposes it.
 Requires dedicated compute — ffmpeg and AI media cannot run on scale-to-zero serverless.
 
 - Cross-instance federation (RFC 9421 signed server-to-server)
-- Family Reel generator; AI photo restoration; face tagging *(all opt-in)*
+- Family Reel generator; AI photo restoration; face tagging _(all opt-in)_
 - Instagram / Google Photos selective import
 - PWA offline with queued edits
 - Multi-language via Weblate; RTL
@@ -216,14 +226,14 @@ Requires dedicated compute — ffmpeg and AI media cannot run on scale-to-zero s
 
 Track from v1.0. These are the leading indicators of the failure modes in the risk register.
 
-| Metric | Why | v1.0 target |
-| --- | --- | --- |
-| Time to first 10 people | Cold start friction (R1) | < 15 min |
+| Metric                                     | Why                           | v1.0 target    |
+| ------------------------------------------ | ----------------------------- | -------------- |
+| Time to first 10 people                    | Cold start friction (R1)      | < 15 min       |
 | Members who are **not** the tenant creator | Single-keeper dependency (R3) | ≥ 3 per family |
-| 30-day contributor retention | Return loop (R2) | ≥ 40% |
-| Profiles with a photo or story | Content depth | ≥ 30% |
-| Elder (60+) unaided task completion | Usability (R4) | ≥ 80% |
-| Suggestions approved vs. rejected | Moderation health (R7) | — (baseline) |
+| 30-day contributor retention               | Return loop (R2)              | ≥ 40%          |
+| Profiles with a photo or story             | Content depth                 | ≥ 30%          |
+| Elder (60+) unaided task completion        | Usability (R4)                | ≥ 80%          |
+| Suggestions approved vs. rejected          | Moderation health (R7)        | — (baseline)   |
 
 If time-to-first-10 or non-creator member count misses target, **stop adding features and
 fix onboarding.** Those two numbers predict whether the project survives.

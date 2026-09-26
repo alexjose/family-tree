@@ -1,7 +1,7 @@
 # Architecture
 
 Technical architecture for the family tree platform. Feature scope lives in
-[FEATURES.md](FEATURES.md); this document covers *how* it is built and *why* those
+[FEATURES.md](FEATURES.md); this document covers _how_ it is built and _why_ those
 choices were made.
 
 **Guiding constraints**
@@ -16,28 +16,28 @@ choices were made.
 
 ## 1. Stack Summary
 
-| Layer | Choice | License |
-| --- | --- | --- |
-| Language | TypeScript (strict) | Apache-2.0 |
-| Frontend | Next.js (App Router) + React | MIT |
-| Styling | Tailwind CSS + shadcn/ui (Radix primitives) | MIT |
-| Tree rendering | `d3-hierarchy` for layout; SVG → Canvas above ~500 nodes | ISC |
-| API | Hono, mounted inside Next; extractable standalone | MIT |
-| Validation | Zod (drives types, request validation, and OpenAPI 3.1) | MIT |
-| Data access | Drizzle ORM + `postgres.js` | Apache-2.0 |
-| Database | Supabase Postgres (RLS-enforced multi-tenancy) | Apache-2.0 |
-| Auth | Supabase Auth (GoTrue) — magic link, phone OTP, OAuth, MFA | Apache-2.0 |
-| Storage | S3-compatible: Supabase Storage → Cloudflare R2 → MinIO (self-host) | — |
-| Search | Postgres FTS + `pg_trgm` + `fuzzystrmatch` (Double Metaphone) | PostgreSQL |
-| Jobs / queue | `pgmq` + `pg_cron`, worker in a scale-to-zero container | PostgreSQL |
-| Realtime | Supabase Realtime (deferred; only if push genuinely required) | Apache-2.0 |
-| Email / messaging | Adapter interface; SMTP default, WhatsApp Cloud API, Telegram | — |
-| Images | `sharp` | Apache-2.0 |
-| PWA | Serwist | MIT |
-| i18n | `next-intl` + Weblate | MIT |
-| Observability | OpenTelemetry (+ GlitchTip optional) | Apache-2.0 |
-| Testing | Vitest, Playwright, axe-core, pgTAP | MIT / MPL-2.0 (dev only) |
-| Monorepo | pnpm workspaces + Turborepo | MIT |
+| Layer             | Choice                                                              | License                  |
+| ----------------- | ------------------------------------------------------------------- | ------------------------ |
+| Language          | TypeScript (strict)                                                 | Apache-2.0               |
+| Frontend          | Next.js (App Router) + React                                        | MIT                      |
+| Styling           | Tailwind CSS + shadcn/ui (Radix primitives)                         | MIT                      |
+| Tree rendering    | `d3-hierarchy` for layout; SVG → Canvas above ~500 nodes            | ISC                      |
+| API               | Hono, mounted inside Next; extractable standalone                   | MIT                      |
+| Validation        | Zod (drives types, request validation, and OpenAPI 3.1)             | MIT                      |
+| Data access       | Drizzle ORM + `postgres.js`                                         | Apache-2.0               |
+| Database          | Supabase Postgres (RLS-enforced multi-tenancy)                      | Apache-2.0               |
+| Auth              | Supabase Auth (GoTrue) — magic link, phone OTP, OAuth, MFA          | Apache-2.0               |
+| Storage           | S3-compatible: Supabase Storage → Cloudflare R2 → MinIO (self-host) | —                        |
+| Search            | Postgres FTS + `pg_trgm` + `fuzzystrmatch` (Double Metaphone)       | PostgreSQL               |
+| Jobs / queue      | `pgmq` + `pg_cron`, worker in a scale-to-zero container             | PostgreSQL               |
+| Realtime          | Supabase Realtime (deferred; only if push genuinely required)       | Apache-2.0               |
+| Email / messaging | Adapter interface; SMTP default, WhatsApp Cloud API, Telegram       | —                        |
+| Images            | `sharp`                                                             | Apache-2.0               |
+| PWA               | Serwist                                                             | MIT                      |
+| i18n              | `next-intl` + Weblate                                               | MIT                      |
+| Observability     | OpenTelemetry (+ GlitchTip optional)                                | Apache-2.0               |
+| Testing           | Vitest, Playwright, axe-core, pgTAP                                 | MIT / MPL-2.0 (dev only) |
+| Monorepo          | pnpm workspaces + Turborepo                                         | MIT                      |
 
 > `axe-core` is MPL-2.0 and is a **dev/CI dependency only** — it is never bundled into a
 > distributed artifact, so the Apache-2.0 distribution stays clean.
@@ -157,7 +157,7 @@ Client → Next route handler / Hono route
 ### 4.2 Approval Pipeline
 
 Suggestions from unverified users and direct writes from verified contributors traverse
-the *same* code path; the only difference is whether the proposal auto-applies:
+the _same_ code path; the only difference is whether the proposal auto-applies:
 
 ```
 suggest() → validate() → resolveTrustLevel() → {
@@ -198,15 +198,15 @@ self-hosters supply their own provider credentials without forking.
 
 ### v1 — serverless, near-zero cost
 
-| Component | Runs on |
-| --- | --- |
-| Web app | Google Cloud Run (scale-to-zero container) |
-| Database + Auth + Storage | Supabase free tier |
-| Cron | Cloud Scheduler → `pg_cron` |
-| CI/CD | GitHub Actions → container registry |
+| Component                 | Runs on                                    |
+| ------------------------- | ------------------------------------------ |
+| Web app                   | Google Cloud Run (scale-to-zero container) |
+| Database + Auth + Storage | Supabase free tier                         |
+| Cron                      | Cloud Scheduler → `pg_cron`                |
+| CI/CD                     | GitHub Actions → container registry        |
 
 **Cloud Run over Vercel.** Vercel has better DX, but the stated plan is to move to
-dedicated VMs. Cloud Run runs the *identical container* you will later run on a VM, so
+dedicated VMs. Cloud Run runs the _identical container_ you will later run on a VM, so
 that migration is a deployment change rather than a port. Vercel remains a supported
 target for contributors who prefer it.
 
@@ -248,14 +248,14 @@ seeded demo tenant. Single-tenant mode hides the tenancy UI. No feature is gated
 
 ## 7. Testing Strategy
 
-| Type | Tool | Non-negotiable coverage |
-| --- | --- | --- |
-| Unit | Vitest | Relationship validation, date parsing, approval rules, scope resolution |
-| Database | pgTAP | **Tenant isolation asserted in SQL** |
-| Integration | Vitest + ephemeral Postgres | Repository and migration behavior |
-| E2E | Playwright | Onboarding, suggest→approve, cross-tenant link |
-| Accessibility | axe-core in Playwright | Zero violations on core flows |
-| Performance | Lighthouse CI | 200-person tree renders < 2s on simulated 3G |
+| Type          | Tool                        | Non-negotiable coverage                                                 |
+| ------------- | --------------------------- | ----------------------------------------------------------------------- |
+| Unit          | Vitest                      | Relationship validation, date parsing, approval rules, scope resolution |
+| Database      | pgTAP                       | **Tenant isolation asserted in SQL**                                    |
+| Integration   | Vitest + ephemeral Postgres | Repository and migration behavior                                       |
+| E2E           | Playwright                  | Onboarding, suggest→approve, cross-tenant link                          |
+| Accessibility | axe-core in Playwright      | Zero violations on core flows                                           |
+| Performance   | Lighthouse CI               | 200-person tree renders < 2s on simulated 3G                            |
 
 **Tenant isolation must be tested at the SQL layer.** An application-level test can pass
 merely because the UI filtered the results; a pgTAP test proves a session scoped to
@@ -267,23 +267,23 @@ tenant A genuinely cannot read tenant B.
 
 Full ADRs live in `docs/adr/`. Summary:
 
-| ADR | Decision | Rationale | Consequence |
-| --- | --- | --- | --- |
-| 001 | TypeScript everywhere | One language, shared types, widest contributor pool | Must accept Node's CPU limits for media work |
-| 002 | Postgres via Supabase | RLS *is* the tenancy model; Apache-2.0 and self-hostable | Supavisor pooling required in serverless |
-| 003 | RLS for tenant isolation | Fails closed on a forgotten filter | Every table needs a policy; test with pgTAP |
-| 004 | Drizzle over Prisma | SQL-first keeps RLS visible; small cold start | Less scaffolding, more hand-written SQL |
-| 005 | Framework-agnostic `packages/core` | Enables federation, plugins, and API extraction | Boundary must be lint-enforced |
-| 006 | Modular monolith, not microservices | The top risk is having no users, not scale | Module boundaries must be respected internally |
-| 007 | Containers on Cloud Run, not Vercel | Identical artifact migrates to VMs unchanged | Slightly more setup than Vercel |
-| 008 | Postgres FTS over a search service | No extra infrastructure; covers fuzzy + phonetic | Revisit only if measured to be insufficient |
-| 009 | `pgmq` over Redis/SQS | Queue lives in the database we already run | Worker must poll; needs a scale-to-zero container |
-| 010 | Relationships as typed edges | Handles adoption, step, multiple marriage without rewrite | More joins than parent columns |
-| 011 | Evidence/conclusion in v1 schema | Retrofitting it is the classic project-killer | Higher initial modeling cost |
-| 012 | S3-compatible storage abstraction | Portable across Supabase, R2, and MinIO | Cannot use provider-specific storage features |
-| 013 | REST + OpenAPI, GraphQL deferred | Simpler to document, cache, and generate SDKs from | GraphQL only if integrators demand it |
-| 014 | Canvas above ~500 nodes | DOM cannot handle large trees | Two rendering paths to maintain |
-| 015 | Defer Realtime, Redis, Kubernetes | Operational surface without user demand | Revisit when metrics justify it |
+| ADR | Decision                            | Rationale                                                 | Consequence                                       |
+| --- | ----------------------------------- | --------------------------------------------------------- | ------------------------------------------------- |
+| 001 | TypeScript everywhere               | One language, shared types, widest contributor pool       | Must accept Node's CPU limits for media work      |
+| 002 | Postgres via Supabase               | RLS _is_ the tenancy model; Apache-2.0 and self-hostable  | Supavisor pooling required in serverless          |
+| 003 | RLS for tenant isolation            | Fails closed on a forgotten filter                        | Every table needs a policy; test with pgTAP       |
+| 004 | Drizzle over Prisma                 | SQL-first keeps RLS visible; small cold start             | Less scaffolding, more hand-written SQL           |
+| 005 | Framework-agnostic `packages/core`  | Enables federation, plugins, and API extraction           | Boundary must be lint-enforced                    |
+| 006 | Modular monolith, not microservices | The top risk is having no users, not scale                | Module boundaries must be respected internally    |
+| 007 | Containers on Cloud Run, not Vercel | Identical artifact migrates to VMs unchanged              | Slightly more setup than Vercel                   |
+| 008 | Postgres FTS over a search service  | No extra infrastructure; covers fuzzy + phonetic          | Revisit only if measured to be insufficient       |
+| 009 | `pgmq` over Redis/SQS               | Queue lives in the database we already run                | Worker must poll; needs a scale-to-zero container |
+| 010 | Relationships as typed edges        | Handles adoption, step, multiple marriage without rewrite | More joins than parent columns                    |
+| 011 | Evidence/conclusion in v1 schema    | Retrofitting it is the classic project-killer             | Higher initial modeling cost                      |
+| 012 | S3-compatible storage abstraction   | Portable across Supabase, R2, and MinIO                   | Cannot use provider-specific storage features     |
+| 013 | REST + OpenAPI, GraphQL deferred    | Simpler to document, cache, and generate SDKs from        | GraphQL only if integrators demand it             |
+| 014 | Canvas above ~500 nodes             | DOM cannot handle large trees                             | Two rendering paths to maintain                   |
+| 015 | Defer Realtime, Redis, Kubernetes   | Operational surface without user demand                   | Revisit when metrics justify it                   |
 
 ---
 
