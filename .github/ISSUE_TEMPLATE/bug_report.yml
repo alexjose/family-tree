@@ -1,0 +1,80 @@
+name: Bug report
+description: Something is broken or behaves unexpectedly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please redact personal data.** Blur or replace real names, dates, and photos in
+        screenshots and descriptions. Never paste another living person's details.
+
+        For security vulnerabilities, follow [SECURITY.md](../SECURITY.md) instead — do not
+        open a public issue.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to …
+        2. Tap …
+        3. See …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Tree view
+        - Person profile
+        - Editing or suggestions
+        - Approvals
+        - Search
+        - Sign in / invites
+        - Notifications
+        - Import / export
+        - Self-hosting
+        - Other / not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Does this involve data loss, wrong data, or another family seeing your data?
+      options:
+        - "No"
+        - "Yes — wrong or missing data"
+        - "Yes — data visible to someone who should not see it"
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Device and browser
+      placeholder: iPhone 12, Safari 18 / Windows 11, Chrome 131
+
+  - type: checkboxes
+    id: accessibility
+    attributes:
+      label: Accessibility
+      options:
+        - label: This affects screen reader, keyboard, or text-size usage
+        - label: An older or non-technical family member hit this problem
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Screenshots (with personal data redacted), console errors, or context.

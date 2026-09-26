@@ -13,8 +13,9 @@
   "scripts": {
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint",
+    "lint": "turbo run lint && eslint scripts",
     "test": "turbo run test",
+    "check:licenses": "node scripts/check-licenses.mjs",
     "clean": "turbo run clean && rm -rf node_modules/.cache .turbo",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
